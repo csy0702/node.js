@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+</head>
+<script>
+    function $(name){
+        return document.getElementsByName(name)[0];
+    }
+    function checkInfo(){
+        var uname=$("uname").value;
+        var pwd=$("pwd").value;
+        if(uname==""||pwd==""){return false;};
+        //提交表单
+        document.getElementById("myform").submit();
+        return true;
+    }
+</script>
+<body>
+
+
+    <form action="http://127.0.0.1:6666/addUser" method="get" id="myform" >
+        用户名:<input type="text" value="用户名" name="uname"/>;
+        密码:<input type="password" name="pwd" value="密码"/>
+        <input type="submit" value="提交" onclick="return checkInfo()">
+        <input type="button" value="注册" onclick="location.href='http://127.0.0.1:6666/reg'"/>
+    </form>
+
+    <a href="http://127.0.0.1:6666/reg">注册</a>
+</body>
+</html>
