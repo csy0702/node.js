@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery-2.0.3.js"></script>
+    <script>
+
+        $(function () {
+            $.get("/getAllClassInfo",null, function (data) {
+                //当页面加载完成后，向服务器发送一个请求获取所有的班级信息
+                if(data.code){
+                    switch (data.code){
+                        case "0":alert("数据库连接失败");
+                        case "1":alert("数据查询失败");
+                    }
+
+                }else {
+                    var str;
+                    $.each(data, function (index,item) {
+                        str="<option value='"+item.cid+"'>"+item.cname+"</option>";
+                        $("#classInfo").append($(str));
+                    })
+                }
+            },"json");
+        })
+
+        function checkInfo(){
+            var cid= $.trim($("#classInfo").val());
+            var sname=$.trim($("#sname").val());
+            var pwd=$.trim($("#pwd").val());
+            var sex= $("input:radio:checked").val();
+            var age=$.trim($("#age").val());
+            var tel=$.trim($("#tel").val());
+            var male= $("#male");
+            var female= $("#female");
+
+            $.post("/adduser", {cid:cid,sname:sname,pwd:pwd,sex:sex,age:age,tel:tel},function (data) {
+                data= $.trim(data);
+                if(data=="0"){
+                    alert("数据库连接失败");
+                }else if(data=="1"){
+                    alert("注册学生信息失败");
+                }else if(data=="2"){
+                    alert("请选择学生性别");
+                }else {
+                    alert("注册学生信息成功，学号为："+data);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<p>用户注册</p>
+    <form action="/adduser"  method="post">
+    班级:<select name="cid" id="classInfo">
+            <option></option>
+        </select><br/>
+            用户名:<input type="text" name="sname" id="sname" /><br/>
+            密码:<input type="password" name="pwd" id="pwd"/><br/>
+            性别:男<input type="radio" name="sex" value="男" id="male"/>女<input type="radio" name="sex" value="女" id="fimale" checked/><br/>
+            年龄:<input type="number" name="age" id="age"/><br/>
+            联系方式:<input type="text" name="tel" id="tel"/><br/>
+            <input  type="button" value="注册" onclick="checkInfo()"/><!--submit会自动提交页面-->
+    </form>
+</body>
+</html>

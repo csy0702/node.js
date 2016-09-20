@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示图片</title>
+    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+</body>
+    <script>
+        $(function () {
+
+            $.post("getAllphoto", function (data) {
+
+                if(data instanceof Array){
+                    for(var i in data){
+                        $("body").append($("<img src='img/"+data[i]+"'/>"));
+                    }
+
+                }else {
+                    alert("不是一个数组");
+                }
+            })
+        })
+
+    </script>
+</html>
