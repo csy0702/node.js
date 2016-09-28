@@ -7,8 +7,30 @@ $(function () {
         $(this).css("border-color","blue");
     });
     userIsLogin()//发送请求判断用户是否已经登录，及登录的话刷新的就自动的显示登录名
+    showGoodsInfoByPge(1,7);
 })
 
+//后台分页  前端和后台一起分页  获取五页数据，但是显示只显示一页，就不会总是去发请求
+//pageNo:查第几页
+//pageSize:每页有多少条
+
+function showGoodsInfoByPge(pageNo,pageSize){
+    $.post("/getGoodsInfoByPage",{pageNo:pageNo,pageSize:pageSize},function(data){
+        $.each(data, function (index,item) {
+            var pic=item.pic;
+            if(pic.indexOf(",")>0){
+                pic=pic.split(",")[0];
+            }else if(pic=="") {
+                pic="images/素材.jpg";
+            }
+
+            var str='<li><dl><dt><img src="'+pic+'"/></dt><dd class="goods_price">商品价格:&yen;'+item.price
+                +'</dd><dd>商品类型'+item.tname+'</dd></dl></li>';
+            $("#goodsInfo").append($(str));
+        });
+        console.info(data);
+    },"json");
+}
 function showLogin(){
     $("#uname").val("");
     $("#pwd").val("");
@@ -43,7 +65,7 @@ function userzc(){
     var uname= $.trim($("#zcuname").val());
     var pwd= $.trim($("#zcpwd").val());
     var pwdagain=$.trim($("#zcpwdagain").val());
-    $.post("userRegister",{uname:uname,pwd:pwd,pwdagain:pwdagain}, function (data) {
+    $.post("/userRegister",{uname:uname,pwd:pwd,pwdagain:pwdagain}, function (data) {
         data= $.trim(data);
         switch (data){
             case "1":$("#res").text("用户名不能为空。。");break;
@@ -74,7 +96,7 @@ function userlogin(){
         return false;
     }
     //发送请求到服务器进行校验
-    $.post("userLogin",{uname:uname,pwd:pwd}, function (data) {
+    $.post("/userLogin",{uname:uname,pwd:pwd}, function (data) {
         data= $.trim(data);
         switch (data){
             case "1":$("#uname").css("border-color","red");break;
@@ -99,7 +121,7 @@ function checkinfos(obj,tabName,colName){
     var info=obj.value;
     if(info!=""){
         //发送请求到服务器看该用户名是否已经被注册
-        $.get("checkUserName",{uname:info,tabName:tabName,colName:colName}, function (data) {
+        $.get("/checkUserName",{uname:info,tabName:tabName,colName:colName}, function (data) {
             data= $.trim(data);
             if(data=="0"){
                 $(obj).css("border-color","green");
@@ -117,7 +139,7 @@ function checkinfos(obj,tabName,colName){
 //刷新判断用户是否已经登录
 
 function userIsLogin(){
-    $.get("userIsLogin",null, function (data) {
+    $.get("/userIsLogin",null, function (data) {
         data= $.trim(data);
         var str;
         if(data!=0){

@@ -17,7 +17,7 @@ alter table goodsType auto_increment=1001;
 
 create table goodsInfo(
     gid int primary key auto_increment,
-    gname varchar(100),
+    gname varchar(100) not null unique,
     price decimal(10,2),
     pic varchar(1000),
     tid int

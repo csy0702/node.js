@@ -3,17 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>商品类型管理</title>
+    <script src="../js/jquery-2.0.3.js"></script>
+    <script>
+        $(function () {
+            $.get("/getAllTypes", null, function (data) {
+                $.each(data, function (index,item) {
+                    $("#goodsTypeInfo").append($("<tr><td>"+item.tid+"</td><td>"+item.tname+"</td><td><a href='javascript:void(0)' onclick='delGoodsType(this,"+item.tid+")'>[删除]</a></td></tr>"))
+                });
+            },"json");
+
+        });
+        function addGoodsType(){//添加商品类型
+            var tname= $.trim($("#tname").val());
+            $.post("/addGoodsType",{tname:tname},function (data){
+                data= $.trim(data);
+                if(data="0"){
+                    alert("商品类型添加失败。。。");
+                }else {
+                    var str="<tr><td>"+data+"</td><td>"+tname+"</td><td><a href='javascript:void(0)' onclick='delGoodsType(this,"+data+")'>[删除]</a></td></tr>";
+                    $("#goodsTypeInfo").append($(str));
+                }
+            },"text");
+        }
+        function delGoodsType(obj,tid){//删除商品类型
+            $.post("/delGoodsType",{tid:tid}, function (data) {
+                data=$.trim(data);
+                if(data=="1"){
+                    $(obj).parent().parent().remove();
+                }else {
+                    alert("删除商品类型信息失败。。。");
+                }
+            });
+        }
+    </script>
 </head>
 <body>
     <fieldset>
         <legend>添加商品类型</legend>
-        商品类型名称:<input type="text" name="tname"/>
-        <input type="button" value="添加"/>
+        商品类型名称:<input type="text" name="tname" id="tname"/>
+        <input type="button" value="添加" onclick="addGoodsType()"/>
     </fieldset>
     <fieldset>
         <legend>已有商品类型名称</legend>
         <table>
-            <thead></thead>
+            <thead align="center" width="60%" border="1px" cellpadding="0px" cellspacing="0px">
+                <tr>商品类型编号</tr>
+                <tr>商品类型名称</tr>
+                <tr>商品类型操作</tr>
+            </thead>
+            <tbody id="goodsTypeInfo" align="center">
+
+            </tbody>
         </table>
     </fieldset>
 </body>
